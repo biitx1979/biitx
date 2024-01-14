@@ -1,0 +1,36 @@
+# 此工作流程将使用节点运行测试，然后在创建版本时将包发布到 GitHub Packages
+# 有关更多信息，请参阅：https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
+
+姓名：名称：Node.js 包
+
+on:
+  release:
+    types: [    类型：[已创建]]
+
+jobs:
+  build:
+    runs-on:     运行：ubuntu-latest
+    steps:
+      - uses:       - 使用：actions/checkout@v3
+      - uses:       - 使用：actions/setup-node@v3
+        with:
+          node-version: 16
+      - run:       - 运行：npm ci
+      - run:       - 运行：npm 测试
+
+  publish-gpr:
+    needs:     需求：构建
+    runs-on:     运行：ubuntu-latest
+    permissions:
+      contents:       内容： 阅读
+      packages:       包：写
+    steps:
+      - uses:       - 使用：actions/checkout@v3
+      - uses:       - 使用：actions/setup-node@v3
+        with:
+          node-version: 16
+          注册表 URL :https: //npm.pkg.github.com/
+      -运动：npm ci
+      -跑步：npm 发布
+        环境：
+          NODE_AUTH_TOKEN  :           NODE_AUTH_TOKEN：${{secrets.GITHUB_TOKEN}}{  { Secrets.GITHUB_TOKEN } }
